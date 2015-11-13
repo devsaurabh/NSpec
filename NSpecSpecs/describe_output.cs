@@ -101,7 +101,11 @@ namespace NSpecSpecs
 
         string ScrubStackTrace(string s)
         {
-            return String.Join("\n", s.Split('\n').Where(a => !a.Trim().StartsWith("at"))).Replace("\r", "");
+            return String.Join("\n", 
+                s.Split('\n')
+                    .Where(a => !a.Trim().StartsWith("in "))
+                    .Where(a => !a.Trim().StartsWith("at ")))
+                .Replace("\r", "");
         }
     }
 }
