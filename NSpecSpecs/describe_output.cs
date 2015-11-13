@@ -8,6 +8,7 @@ using NSpec;
 using NSpec.Domain;
 using NSpec.Domain.Formatters;
 using SampleSpecs.Bug;
+using System.Collections.Generic;
 
 namespace NSpecSpecs
 {
@@ -72,20 +73,24 @@ namespace NSpecSpecs
          TestCase(typeof(describe_focus_output),
                   new [] { typeof(describe_focus) },
                   "focus")]
-        public void output_verification(Type output, Type []testClasses, string tags)
+        public void output_verification(Type output, Type[] testClasses, string tags)
         {
             var finder = new SpecFinder(testClasses, "");
             var builder = new ContextBuilder(finder, new Tags().Parse(tags), new DefaultConventions());
             var consoleFormatter = new ConsoleFormatter();
 
-            var actual = new System.Collections.Generic.List<string>();
+            var actual = new List<string>();
             consoleFormatter.WriteLineDelegate = actual.Add;
 
             var runner = new ContextRunner(builder, consoleFormatter, false);
             runner.Run(builder.Contexts().Build());
 
-            var expectedString = ScrubStackTrace(ScrubNewLines(output.GetField("Output").GetValue(null) as string));
-            var actualString = ScrubStackTrace(String.Join("\n", actual)).Trim();
+            var expectedOutput = ScrubNewLines(output.GetField("Output").GetValue(null) as string);
+            var actualOutput = String.Join("\n", actual);
+
+            var expectedString = ScrubStackTrace(expectedOutput);
+            var actualString = ScrubStackTrace(actualOutput).Trim();
+
             actualString.should_be(expectedString);
         }
 
