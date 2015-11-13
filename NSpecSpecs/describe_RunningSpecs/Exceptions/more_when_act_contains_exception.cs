@@ -45,15 +45,17 @@ namespace NSpecSpecs.describe_RunningSpecs.Exceptions
         [Test]
         public void the_example_level_failure_should_indicate_a_context_failure()
         {
-            TheExample("is true")
-                .Exception.GetType().should_be(typeof(ExampleFailureException));
+            var example = TheExample("is true");
+
+            example.Exception.GetType().should_be(typeof(ExampleFailureException));
         }
 
         [Test]
-        public void examples_with_only_act_failure_should_fail_because_of_act()
+        public void it_should_throw_exception_from_act_not_from_failing_example()
         {
-            TheExample("is true").Exception
-                .InnerException.GetType().should_be(typeof(InvalidOperationException));
+            var example = TheExample("is true");
+
+            example.Exception.InnerException.GetType().should_be(typeof(InvalidOperationException));
         }
     }
 }
